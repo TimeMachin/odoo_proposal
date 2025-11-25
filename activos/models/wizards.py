@@ -8,18 +8,18 @@ from datetime import datetime
 
 class ActivosItemsWizardCrear(models.TransientModel):
     _name = 'activos.items.wizard.crear'
-    _description = 'Wizard para crear múltiples items'
+    _description = 'Wizard para crear multiples items'
 
     nombre = fields.Char(
         string='Nombre del Item',
         required=True,
-        help='Nombre que tendrán todos los items'
+        help='Nombre que tendran todos los items'
     )
     cantidad = fields.Integer(
         string='Cantidad de Items',
         required=True,
         default=1,
-        help='Número de items a crear (1 a N)'
+        help='Numero de items a crear (1 a N)'
     )
     activo_fijo_padre_id = fields.Many2one(
         'activos.items',
@@ -29,15 +29,15 @@ class ActivosItemsWizardCrear(models.TransientModel):
     imprimir_etiquetas = fields.Boolean(
         string='Imprimir Etiquetas',
         default=False,
-        help='Generar e imprimir automáticamente las etiquetas QR'
+        help='Generar e imprimir automaticamente las etiquetas QR'
     )
     fecha_adquisicion = fields.Date(
-        string='Fecha de Adquisición',
-        help='Fecha de adquisición del activo fijo'
+        string='Fecha de Adquisicion',
+        help='Fecha de adquisicion del activo fijo'
     )
 
     def _generar_codigo_qr(self, contenido):
-        """Genera un código QR en base64 a partir del contenido"""
+        """Genera un codigo QR en base64 a partir del contenido"""
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -53,28 +53,28 @@ class ActivosItemsWizardCrear(models.TransientModel):
         return base64.b64encode(buffer.getvalue()).decode()
 
     def _generar_codigo_item_unico(self, padre_id, numero_secuencia):
-        """Genera un código único basado en el padre y número de secuencia"""
+        """Genera un codigo unico basado en el padre y numero de secuencia"""
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         return f"ITEM-{padre_id}-{numero_secuencia}-{timestamp}"
 
     def action_crear_items(self):
-        """Crea los items con los parámetros del wizard"""
+        """Crea los items con los parametros del wizard"""
         if self.cantidad < 1:
             raise UserError('La cantidad debe ser al menos 1')
 
         items_creados = []
         
         for i in range(1, self.cantidad + 1):
-            # Asignar número de secuencia solo si hay más de 1 item
+            # Asignar numero de secuencia solo si hay mas de 1 item
             numero_secuencia = i if self.cantidad > 1 else None
             
-            # Generar código único
+            # Generar codigo unico
             codigo_item = self._generar_codigo_item_unico(
                 self.activo_fijo_padre_id.id if self.activo_fijo_padre_id else 'NEW',
                 numero_secuencia or 1
             )
             
-            # Generar código QR
+            # Generar codigo QR
             codigo_qr = self._generar_codigo_qr(codigo_item)
             
             # Crear el item
@@ -91,12 +91,12 @@ class ActivosItemsWizardCrear(models.TransientModel):
         if self.imprimir_etiquetas and items_creados:
             return self._generar_reporte_etiquetas(items_creados)
 
-        # Mostrar mensaje de confirmación
+        # Mostrar mensaje de confirmacion
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Éxito',
+                'title': 'exito',
                 'message': f'Se han creado {len(items_creados)} item(s) correctamente',
                 'type': 'success',
             }
@@ -104,14 +104,14 @@ class ActivosItemsWizardCrear(models.TransientModel):
 
     def _generar_reporte_etiquetas(self, items):
         """Genera un reporte con las etiquetas QR de los items"""
-        # Por ahora retornamos una notificación
-        # En producción, aquí iría la generación del reporte PDF
+        # Por ahora retornamos una notificacion
+        # En produccion, aqui iria la generacion del reporte PDF
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': 'Etiquetas Generadas',
-                'message': f'Etiquetas QR generadas para {len(items)} item(s). Funcionalidad de impresión en desarrollo.',
+                'message': f'Etiquetas QR generadas para {len(items)} item(s). Funcionalidad de impresion en desarrollo.',
                 'type': 'info',
             }
         }
@@ -122,9 +122,9 @@ class ActivosItemsWizardInventario(models.TransientModel):
     _description = 'Wizard para inventario de items'
 
     codigo_qr_leido = fields.Char(
-        string='Código QR',
+        string='Codigo QR',
         required=True,
-        help='Escanea o ingresa el código QR del item'
+        help='Escanea o ingresa el codigo QR del item'
     )
     notas = fields.Text(
         string='Notas',
@@ -136,21 +136,21 @@ class ActivosItemsWizardInventario(models.TransientModel):
         help='Crear un caso de mantenimiento para este item'
     )
     descripcion_mantenimiento = fields.Text(
-        string='Descripción de Mantenimiento',
-        help='Descripción del caso de mantenimiento a crear'
+        string='Descripcion de Mantenimiento',
+        help='Descripcion del caso de mantenimiento a crear'
     )
 
     def action_procesar_inventario(self):
         """Procesa el inventario del item escaneado"""
-        # Buscar el item por código QR
+        # Buscar el item por codigo QR
         item = self.env['activos.items'].search([
             ('codigo_qr', '=', self.codigo_qr_leido)
         ], limit=1)
 
         if not item:
-            raise UserError(f'No se encontró item con el código QR: {self.codigo_qr_leido}')
+            raise UserError(f'No se encontro item con el codigo QR: {self.codigo_qr_leido}')
 
-        # Actualizar fecha de último inventario
+        # Actualizar fecha de ultimo inventario
         item.write({
             'fecha_ultimo_inventario': fields.Date.today(),
             'notas': (item.notas or '') + f"\n[INVENTARIO {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {self.notas or ''}",
@@ -181,25 +181,25 @@ class ActivosItemsWizardBaja(models.TransientModel):
     _description = 'Wizard para dar de baja items'
 
     codigo_qr_leido = fields.Char(
-        string='Código QR',
+        string='Codigo QR',
         required=True,
-        help='Escanea o ingresa el código QR del item'
+        help='Escanea o ingresa el codigo QR del item'
     )
     motivo_baja = fields.Text(
         string='Motivo de la Baja',
         required=True,
-        help='Razón por la cual se da de baja el item'
+        help='Razon por la cual se da de baja el item'
     )
 
     def action_procesar_baja(self):
         """Procesa la baja del item escaneado"""
-        # Buscar el item por código QR
+        # Buscar el item por codigo QR
         item = self.env['activos.items'].search([
             ('codigo_qr', '=', self.codigo_qr_leido)
         ], limit=1)
 
         if not item:
-            raise UserError(f'No se encontró item con el código QR: {self.codigo_qr_leido}')
+            raise UserError(f'No se encontro item con el codigo QR: {self.codigo_qr_leido}')
 
         if item.fecha_baja:
             raise UserError(f'El item {item.nombre} ya ha sido dado de baja en {item.fecha_baja}')

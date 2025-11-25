@@ -10,7 +10,7 @@ class ActivoItem(models.Model):
         string='ID Activo Item',
         required=True,
         unique=True,
-        help='Identificador único del activo'
+        help='Identificador unico del activo'
     )
     activo_fijo_padre_id = fields.Many2one(
         'activos.items',
@@ -23,17 +23,17 @@ class ActivoItem(models.Model):
         help='Nombre del activo'
     )
     numero_secuencia = fields.Integer(
-        string='Número de Secuencia',
-        help='Número de secuencia del activo'
+        string='Numero de Secuencia',
+        help='Numero de secuencia del activo'
     )
     codigo_qr = fields.Char(
-        string='Código QR',
+        string='Cudigo QR',
         unique=True,
-        help='Código QR único del activo'
+        help='Cudigo QR unico del activo'
     )
     fecha_ultimo_inventario = fields.Date(
-        string='Fecha Último Inventario',
-        help='Fecha del último inventario realizado'
+        string='Fecha ultimo Inventario',
+        help='Fecha del ultimo inventario realizado'
     )
     fecha_baja = fields.Date(
         string='Fecha de Baja',
@@ -45,12 +45,12 @@ class ActivoItem(models.Model):
     )
 
     _sql_constraints = [
-        ('activo_item_id_unique', 'unique(activo_item_id)', 'El ID del activo debe ser único'),
-        ('codigo_qr_unique', 'unique(codigo_qr)', 'El código QR debe ser único'),
+        ('activo_item_id_unique', 'unique(activo_item_id)', 'El ID del activo debe ser unico'),
+        ('codigo_qr_unique', 'unique(codigo_qr)', 'El codigo QR debe ser unico'),
     ]
 
     def action_crear_items(self):
-        """Abre el wizard para crear múltiples items"""
+        """Abre el wizard para crear multiples items"""
         return {
             'name': 'Crear Items',
             'type': 'ir.actions.act_window',

@@ -2,8 +2,8 @@
     'name': 'CustomModule',
     'version': '19.0.1.0.0',
     'category': 'Accounting',
-    'summary': 'Módulo para gestionar activos fijos con código QR',
-    'author': 'Tu Empresa',
+    'summary': 'Modulo para gestionar activos fijos con codigo QR',
+    'author': 'EMpresa Odoo Kreme',
     'depends': ['base', 'maintenance'],
     'data': [
         'security/ir.model.access.csv',
