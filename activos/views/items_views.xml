@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View -->
+        <record id="view_activos_items_form" model="ir.ui.view">
+            <field name="name">activos.items.form</field>
+            <field name="model">activos.items</field>
+            <field name="arch" type="xml">
+                <form string="Activo Item">
+                    <header>
+                        <button name="action_crear_items" string="Crear Items" type="object" class="btn-primary"/>
+                        <button name="action_inventario_items" string="Inventario" type="object" class="btn-info"/>
+                        <button name="action_baja_item" string="Dar de Baja" type="object" class="btn-warning"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="activo_item_id" required="1"/>
+                                <field name="nombre" required="1"/>
+                                <field name="numero_secuencia"/>
+                            </group>
+                            <group>
+                                <field name="codigo_qr"/>
+                                <field name="activo_fijo_padre_id"/>
+                                <field name="fecha_ultimo_inventario"/>
+                                <field name="fecha_baja"/>
+                            </group>
+                        </group>
+                        <field name="notas" placeholder="Notas adicionales del activo..." nolabel="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="view_activos_items_tree" model="ir.ui.view">
+            <field name="name">activos.items.tree</field>
+            <field name="model">activos.items</field>
+            <field name="arch" type="xml">
+                <tree string="Activos Items">
+                    <field name="activo_item_id"/>
+                    <field name="nombre"/>
+                    <field name="codigo_qr"/>
+                    <field name="fecha_ultimo_inventario"/>
+                    <field name="fecha_baja"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_activos_items_search" model="ir.ui.view">
+            <field name="name">activos.items.search</field>
+            <field name="model">activos.items</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Activos Items">
+                    <field name="activo_item_id"/>
+                    <field name="nombre"/>
+                    <field name="codigo_qr"/>
+                    <separator/>
+                    <filter name="sin_baja" string="Sin Baja" domain="[('fecha_baja', '=', False)]"/>
+                    <filter name="con_baja" string="Con Baja" domain="[('fecha_baja', '!=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_activos_items" model="ir.actions.act_window">
+            <field name="name">Activos Items</field>
+            <field name="res_model">activos.items</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crea un nuevo activo item
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_activos_root" name="Activos" sequence="10"/>
+        <menuitem id="menu_activos_items" name="Items" parent="menu_activos_root" action="action_activos_items" sequence="10"/>
+
+        <!-- Wizard Views -->
+        
+        <!-- Wizard Crear Items Form -->
+        <record id="view_wizard_crear_items_form" model="ir.ui.view">
+            <field name="name">activos.items.wizard.crear.form</field>
+            <field name="model">activos.items.wizard.crear</field>
+            <field name="arch" type="xml">
+                <form string="Crear Items">
+                    <group>
+                        <group>
+                            <field name="nombre" required="1"/>
+                            <field name="cantidad" required="1"/>
+                            <field name="activo_fijo_padre_id"/>
+                        </group>
+                        <group>
+                            <field name="fecha_adquisicion"/>
+                            <field name="imprimir_etiquetas"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_crear_items" string="Crear Items" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Inventario Form -->
+        <record id="view_wizard_inventario_form" model="ir.ui.view">
+            <field name="name">activos.items.wizard.inventario.form</field>
+            <field name="model">activos.items.wizard.inventario</field>
+            <field name="arch" type="xml">
+                <form string="Inventario de Items">
+                    <group>
+                        <field name="codigo_qr_leido" required="1" autofocus="autofocus"/>
+                        <field name="notas" placeholder="Ingresa notas opcionales..."/>
+                        <field name="crear_caso_mantenimiento"/>
+                    </group>
+                    <group attrs="{'invisible': [('crear_caso_mantenimiento', '=', False)]}">
+                        <field name="descripcion_mantenimiento" placeholder="Describe el caso de mantenimiento..."/>
+                    </group>
+                    <footer>
+                        <button name="action_procesar_inventario" string="Procesar Inventario" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Baja Form -->
+        <record id="view_wizard_baja_form" model="ir.ui.view">
+            <field name="name">activos.items.wizard.baja.form</field>
+            <field name="model">activos.items.wizard.baja</field>
+            <field name="arch" type="xml">
+                <form string="Baja de Item">
+                    <group>
+                        <field name="codigo_qr_leido" required="1" autofocus="autofocus"/>
+                        <field name="motivo_baja" required="1" placeholder="Indica el motivo de la baja..."/>
+                    </group>
+                    <footer>
+                        <button name="action_procesar_baja" string="Confirmar Baja" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

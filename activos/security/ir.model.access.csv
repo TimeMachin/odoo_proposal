@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_activos_items_user,activos.items user,model_activos_items,base.group_user,1,1,1,1
+access_activos_items_manager,activos.items manager,model_activos_items,base.group_system,1,1,1,1
+access_wizard_crear_user,wizard crear user,model_activos_items_wizard_crear,base.group_user,1,1,1,1
+access_wizard_inventario_user,wizard inventario user,model_activos_items_wizard_inventario,base.group_user,1,1,1,1
+access_wizard_baja_user,wizard baja user,model_activos_items_wizard_baja,base.group_user,1,1,1,1
